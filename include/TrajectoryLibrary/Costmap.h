@@ -5,6 +5,9 @@
 #include <condition_variable>
 #include <iostream>
 
+#include <vector>
+#include <math.h>
+
 class Costmap {
     public:
 
@@ -17,8 +20,8 @@ class Costmap {
                  int heightArg );
 
 
-        /// @brief Default Destructor
-        ~Costmap();
+        // /// @brief Default Destructor
+        // ~Costmap();
 
         //// Utility Functions
         std::pair<int, int> indexToRC( int index ) const;
@@ -31,13 +34,12 @@ class Costmap {
         uint8_t get( int r, int c ) const;
         uint8_t get( double x, double y ) const;
 
-        ///// Load Costmap To/From Files
-        bool fromFile( const std::string& filename, double resolution );
-        bool fromPgm( const std::string& filename, double resolution );
-        bool toFile( const std::string& filename ) const;
-        bool toPgm( const std::string& filename ) const;
+        // ///// Load Costmap To/From Files
+        // bool fromFile( const std::string& filename, double resolution );
+        // bool fromPgm( const std::string& filename, double resolution );
+        // bool toFile( const std::string& filename ) const;
+        // bool toPgm( const std::string& filename ) const;
 
-    private:
 
         std::vector<uint8_t> data;
 
@@ -50,7 +52,20 @@ class Costmap {
         int width;
         int height;
 
-        std::ostream& operator<<( std::ostream& out, const Costmap& other);
+    private:
+
+        // std::vector<uint8_t> data;
+
+        // double resolution;
+        // double min_x;
+        // double min_y;
+        // double max_x;
+        // double max_y;
+
+        // int width;
+        // int height;
+
+        // std::ostream& operator<<( std::ostream& out, const Costmap& other);
 };
 
 #endif

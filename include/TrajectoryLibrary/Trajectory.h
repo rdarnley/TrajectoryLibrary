@@ -3,12 +3,15 @@
 
 #include <thread>
 #include <condition_variable>
+#include <vector>
 
 struct State {
     double x;
     double y;
     double z;
     double yaw;
+
+    State(){}
 
     State(const double xArg, const double yArg, const double zArg, const double yawArg)
     {
@@ -18,23 +21,24 @@ struct State {
         yaw = yawArg;
     }
 
-}
+};
 
 class Trajectory {
     public:
 
         /// @brief Constructor
-        Trajectory( const std::vector<State>& states = std::vector<State>() );
+        Trajectory( );
         
-        /// @brief Destructor
-        ~Trajectory();
-
-    private:
+        // /// @brief Destructor
+        // ~Trajectory();
 
         std::vector<State> states;
         int group_id;
         int path_id;
         int score;
+
+    private:
+
 
 };
 

@@ -1,8 +1,8 @@
-#include "TrajectoryLibraryManager.h"
+#include "TrajectoryLibrary/TrajectoryLibraryManager.h"
 
 TrajectoryLibraryManager::TrajectoryLibraryManager(double min_x, double min_y, double resolution, int width, int height)
 {
-    std::make_shared<Costmap> m_costmap(min_x, min_y, resolution, width, height);
+    m_costmap = std::make_shared<Costmap>(min_x, min_y, resolution, width, height);
 }
 
 
@@ -45,11 +45,11 @@ bool TrajectoryLibraryManager::configure(std::string filepath)
     int pathNum = 343;  //fix this
 
     for (int i = 0; i < pointNum; ++i){
-        val1 = fscanf(filePtr, "%f", &st.x);
-        val2 = fscanf(filePtr, "%f", &st.y);
-        val3 = fscanf(filePtr, "%f", &st.z);
+        val1 = fscanf(filePtr, "%le", &st.x);
+        val2 = fscanf(filePtr, "%le", &st.y);
+        val3 = fscanf(filePtr, "%le", &st.z);
         val4 = fscanf(filePtr, "%d", &pathID);
-        val5 = fscanf(filePtr, "%f", &groupID);
+        val5 = fscanf(filePtr, "%d", &groupID);
 
         if (val1 != 1 || val2 != 1 || val3 != 1 || val4 != 1 || val5 != 1) {
         printf ("\nError reading input files, exit.\n\n");

@@ -6,8 +6,8 @@
 #include <condition_variable>
 
 //// Package Headers ////
-#include "TrajectoryLibraryManager.h"
-#include "GoalManager.h"
+#include "TrajectoryLibrary/TrajectoryLibraryManager.h"
+#include "TrajectoryLibrary/GoalManager.h"
 
 //// ROS Headers ////
 #include <ros/ros.h>
@@ -15,14 +15,17 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <tf2_ros/transform_listener.h>
 
+bool fromOccupancyGrid( const nav_msgs::OccupancyGrid& msg, std::shared_ptr<Costmap> & costmap );
+
+
 class TrajectoryLibraryWrapper {
     public:
 
         /// @brief Constructor 
         TrajectoryLibraryWrapper();
         
-        /// @brief Destructor
-        ~TrajectoryLibraryWrapper() = default;
+        // /// @brief Destructor
+        // ~TrajectoryLibraryWrapper() = default;
 
         void Loop();
 

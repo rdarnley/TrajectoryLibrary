@@ -9,7 +9,7 @@ class GoalManager {
     public:
 
         GoalManager();
-        ~GoalManager();
+        // ~GoalManager();
 
     private:
 

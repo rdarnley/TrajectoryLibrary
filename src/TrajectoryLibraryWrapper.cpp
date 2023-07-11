@@ -1,4 +1,4 @@
-#include "TrajectoryLibraryWrapper.h"
+#include "TrajectoryLibrary/TrajectoryLibraryWrapper.h"
 
 //// Utility Functions
 // nav_msgs::OccupancyGrid to_OccupancyGrid( void )const {
@@ -18,7 +18,7 @@
 //   return map_msg;
 // }
 
-bool fromOccupancyGrid( const nav_msgs::OccupancyGrid msg, std::shared_ptr<Costmap> & costmap ) {
+bool fromOccupancyGrid( const nav_msgs::OccupancyGrid & msg, std::shared_ptr<Costmap> & costmap ) {
   costmap->resolution = msg.info.resolution;
   costmap->width = msg.info.width;
   costmap->height = msg.info.height;
@@ -97,7 +97,7 @@ TrajectoryLibraryWrapper::TrajectoryLibraryWrapper()
 // Fifth publish debug and selected trajectory
 // Note : Might make this multi-threaded later once more calculations
 // are happening. For now it isn't that much so sequential is fine.
-TrajectoryLibraryWrapper::Loop(){
+void TrajectoryLibraryWrapper::Loop(){
 
     std::cout << "[TrajectoryLibraryWrapper] Entering Loop" << std::endl;
 
@@ -115,7 +115,14 @@ TrajectoryLibraryWrapper::Loop(){
         // p_gm->
 
         // Calculate Trajectories
-        geometry_msgs::TransformStamped vehicleToBaseTf = m_tfBuffer.lookupTransform(m_baseFrame, m_vehicleFrame, ros::Time(0));
+        geometry_msgs::TransformStamped vehicleToBaseTf;
+        if (m_tfBuffer.canTransform(m_vehicleFrame, m_baseFrame, ros::Time(0)) ){
+            vehicleToBaseTf = m_tfBuffer.lookupTransform(m_baseFrame, m_vehicleFrame, ros::Time(0));
+        } else {
+            std::cout << "[TrajectoryLibraryWrapper] Cannot Get Transform Between Frames. Continuing" << std::endl;
+            continue;
+        }
+
         if (!p_tlm->processTrajectories(vehicleToBaseTf))
         {
             std::cout << "[TrajectoryLibraryWrapper] Unable To Process Trajectories" << std::endl;
@@ -132,9 +139,9 @@ TrajectoryLibraryWrapper::Loop(){
 
 
 
-void TrajectoryLibraryWrapper::odometryCallback(const nav_msgs::Odometry msg){
+void TrajectoryLibraryWrapper::odometryCallback(const nav_msgs::Odometry& msg){
     
-    m_odometry = msg;
+    // m_odometry = msg;
     m_hasOdom = true;
 
     return;

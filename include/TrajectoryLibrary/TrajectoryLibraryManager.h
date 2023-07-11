@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <algorithm> 
 #include <deque>
+#include <unordered_map>
 
 // Want to get rid of this stuff
 #include "tf/transform_datatypes.h"
@@ -18,10 +19,8 @@
 #include <tf/transform_listener.h>
 #include "geometry_msgs/TransformStamped.h"
 
-#include "Costmap.h"
-#include "Trajectory.h"
-
-bool fromOccupancyGrid( const nav_msgs::OccupancyGrid& msg, std::shared_ptr<Costmap> & costmap );
+#include "TrajectoryLibrary/Costmap.h"
+#include "TrajectoryLibrary/Trajectory.h"
 
 class TrajectoryLibraryManager {
     public:
@@ -29,8 +28,8 @@ class TrajectoryLibraryManager {
         /// @brief Constructor
         TrajectoryLibraryManager(double min_x, double min_y, double resolution, int width, int height);
 
-        /// @brief Destructor
-        ~TrajectoryLibraryManager();
+        // /// @brief Destructor
+        // ~TrajectoryLibraryManager();
 
         /// @brief Configure
         // Load Trajectory Library File
@@ -41,7 +40,7 @@ class TrajectoryLibraryManager {
         // bool getBestTrajectory();
 
         std::shared_ptr<Costmap> m_costmap;
-        std::unordered_map<int, std::vector<Trajectory>> m_trajectories;
+        std::unordered_map<int, Trajectory> m_trajectories;
 
 
     private:
