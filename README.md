@@ -6,6 +6,10 @@ The trajectory library preloads .ply files which contain the list of potential t
 
 The trajectories can be arbitrarily designed. Right now, there are 3 main swaths, each at different distances to the vehicle (short, medium, and long range). 
 
+An illustration of the raw trajectories can be seen below.
+
+![plot](./images/trajectory_library.png)
+
 An illustration of the trajectory library running can be seen below.
 
 ![plot](./images/TrajectoryExample.png)
