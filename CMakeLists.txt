@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_geometry_msgs
   tf2
   tf2_msgs
+  visualization_msgs
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)

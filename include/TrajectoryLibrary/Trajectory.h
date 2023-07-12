@@ -33,6 +33,7 @@ class Trajectory {
         // ~Trajectory();
 
         std::vector<State> states;
+        std::vector<State> outputStates;
         int group_id;
         int path_id;
         int score;

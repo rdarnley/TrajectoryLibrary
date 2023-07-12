@@ -36,7 +36,6 @@ bool fromOccupancyGrid( const nav_msgs::OccupancyGrid & msg, std::shared_ptr<Cos
   return true;
 }
 
-
 /// @brief Constructor
 TrajectoryLibraryWrapper::TrajectoryLibraryWrapper()
     :   m_nh{"~"},
@@ -49,12 +48,14 @@ TrajectoryLibraryWrapper::TrajectoryLibraryWrapper()
     //// ROS PARAM Server - Topics, TFs, Etc
     std::string odometry_topic, costmap_topic;
     std::string trajectory_library_filepath;
+    std::string trajectory_topic;
 
     m_nh.param<std::string>("odometry_topic", odometry_topic, "/cmu_rc2/integrated_to_init");
     m_nh.param<std::string>("costmap_topic", costmap_topic, "/cmu_rc2/costmap");
     m_nh.param<std::string>("trajectory_library_filepath", trajectory_library_filepath, "");
     m_nh.param<std::string>("vehicle_frame", m_vehicleFrame, "cmu_rc2_sensor");
     m_nh.param<std::string>("base_frame", m_baseFrame, "cmu_rc2_sensor_init");
+    m_nh.param<std::string>("trajectory_topic", trajectory_topic, "/TrajectoryLibrary/trajectories");
 
 
     //// ROS PARAM Server - Tuning, Map Values, Etc
@@ -72,7 +73,7 @@ TrajectoryLibraryWrapper::TrajectoryLibraryWrapper()
     m_costmap_sub = m_nh.subscribe(costmap_topic, 1, &TrajectoryLibraryWrapper::costmapCallback, this);
 
     // Setup ROS Publishers
-
+    m_trajectoryPub = m_nh.advertise<visualization_msgs::MarkerArray>(trajectory_topic, 1);
 
     // Instantiate TrajectoryLibraryManager
     p_tlm = std::make_unique<TrajectoryLibraryManager>(min_x, min_y, resolution, width, height);
@@ -101,10 +102,13 @@ void TrajectoryLibraryWrapper::Loop(){
 
     std::cout << "[TrajectoryLibraryWrapper] Entering Loop" << std::endl;
 
-    ros::Rate rate(20);
+    ros::Rate rate(10);
 
     while (ros::ok())
     {
+        // Sleep
+        rate.sleep();
+
         // Update ROS Callbacks
         ros::spinOnce();
 
@@ -129,19 +133,57 @@ void TrajectoryLibraryWrapper::Loop(){
         }
 
         // Publish Selected Trajectory and Debug
-        // p_tlm->
+        m_trajectoryPub.publish(  toRviz(vehicleToBaseTf)  );
 
-        // Sleep
-        rate.sleep();
     }
 }
 
+visualization_msgs::MarkerArray TrajectoryLibraryWrapper::toRviz(geometry_msgs::TransformStamped& tran)
+{
+    visualization_msgs::MarkerArray array;
 
+    for (auto & [path, traj] : p_tlm->m_trajectories){
+        
+        visualization_msgs::Marker m;
+
+        m.header.frame_id = m_baseFrame;
+        m.header.stamp = ros::Time::now();
+        m.ns = "trajectories";
+        m.id = traj.path_id;
+        m.type = 4; // Line Strip
+        m.action = 0; // Add / Modify
+        m.scale.x = 0.05;    m.scale.y = 0.05;    m.scale.z = 0.05;
+
+        m.color.r = 1.0;
+        m.color.g = 0.0;
+        m.color.b = 0.0;
+        m.color.a = 1.0;
+        if (traj.score == 0){
+            m.color.r = 0.0;
+            m.color.g = 1.0;
+        } else if (traj.score < 1000) {
+            m.color.r = 0.0;
+            m.color.b = 1.0;
+        }
+
+        m.points.clear();
+        m.colors.clear();
+        for ( auto state : traj.outputStates ){
+            geometry_msgs::Point p;
+            p.x = state.x; p.y = state.y; p.z = state.z;
+            m.points.push_back(p);
+        }
+
+        array.markers.push_back(m);
+    }
+
+    return array;
+}
 
 
 void TrajectoryLibraryWrapper::odometryCallback(const nav_msgs::Odometry& msg){
     
-    // m_odometry = msg;
+    m_odometry = msg;
     m_hasOdom = true;
 
     return;

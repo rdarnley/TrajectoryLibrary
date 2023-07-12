@@ -14,9 +14,12 @@
 #include <nav_msgs/Odometry.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <tf2_ros/transform_listener.h>
+#include <visualization_msgs/MarkerArray.h>
+#include <visualization_msgs/Marker.h>
+#include <geometry_msgs/Vector3.h>
+#include <std_msgs/ColorRGBA.h>
 
 bool fromOccupancyGrid( const nav_msgs::OccupancyGrid& msg, std::shared_ptr<Costmap> & costmap );
-
 
 class TrajectoryLibraryWrapper {
     public:
@@ -38,6 +41,7 @@ class TrajectoryLibraryWrapper {
         std::string m_baseFrame;
 
         nav_msgs::OccupancyGrid m_occupancyGrid;
+        nav_msgs::Odometry m_odometry;
 
         std::unique_ptr<TrajectoryLibraryManager> p_tlm;
         std::unique_ptr<GoalManager> p_gm;
@@ -50,12 +54,17 @@ class TrajectoryLibraryWrapper {
 
         ros::Subscriber m_odometry_sub;                     // Odometry Subscriber
         ros::Subscriber m_costmap_sub;                      // Costmap Subscriber
+
+        ros::Publisher m_trajectoryPub;
         
         /// @brief Vehicle Odometry Callback
         void odometryCallback(const nav_msgs::Odometry& msg);
 
         /// @brief Vehicle Costmap Callback
         void costmapCallback(const nav_msgs::OccupancyGrid& msg);
+
+        visualization_msgs::MarkerArray toRviz(geometry_msgs::TransformStamped& tran);
+
 
 };
 

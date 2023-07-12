@@ -75,17 +75,23 @@ bool TrajectoryLibraryManager::configure(std::string filepath)
 bool TrajectoryLibraryManager::processTrajectories(geometry_msgs::TransformStamped & tran)
 {
     // Iterate over trajectories
-    for (auto [id, traj] : m_trajectories)
+    for (auto & [id, traj] : m_trajectories)
     {
         // Score Trajectory
         int cost = 0;
 
+        traj.outputStates.clear();
         for (auto state : traj.states)
         {
             // Transform State To Sensor Init Frame
             geometry_msgs::Point p;
             p.x = state.x; p.y = state.y; p.z = state.z;
+
             tf2::doTransform(p, p, tran);
+
+            State st;
+            st.x = p.x; st.y = p.y; st.z = p.z;
+            traj.outputStates.push_back(st);
 
             // Get Value In Costmap
             cost += m_costmap->get(p.x, p.y);
@@ -93,7 +99,7 @@ bool TrajectoryLibraryManager::processTrajectories(geometry_msgs::TransformStamp
 
         traj.score = cost;
     
-        std::cout << "Trajectory #" << id << " Scored " << cost << std::endl;
+        std::cout << "Trajectory #" << traj.path_id << " Scored " << cost << std::endl;
     }
     // add to heap???
 
