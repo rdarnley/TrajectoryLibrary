@@ -66,7 +66,7 @@ class TrajectoryLibraryWrapper {
 
         visualization_msgs::MarkerArray toRviz(geometry_msgs::TransformStamped& tran);
         visualization_msgs::Marker toRviz(geometry_msgs::TransformStamped& tran, Trajectory & traj);
-        visualization_msgs::Marker toRviz(Waypoint & currentGoal);
+        visualization_msgs::MarkerArray toRviz(Waypoint & currentGoal);
 
 };
 

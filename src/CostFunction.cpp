@@ -47,3 +47,9 @@ void CostFunction::calculateScores( std::unordered_map<int, Trajectory> & trajec
         traj.score = m_costmapWeight * cost + m_heuristicWeight * dist + m_persistenceWeight * idDelta;    
     }
 }
+
+// should probably get something like this looking really good in sim (don't need to handle continuity / tracking component yet)
+// tune with perception. obviously naive and overfit but make this work really well. then can add complexity to cost function,
+// worry about continuity/tracking, rates, etc
+
+// Also need to create speed profiles

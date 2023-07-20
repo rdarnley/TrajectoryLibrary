@@ -76,7 +76,7 @@ TrajectoryLibraryWrapper::TrajectoryLibraryWrapper()
     // Setup ROS Publishers
     m_trajectoryPub = m_nh.advertise<visualization_msgs::MarkerArray>(trajectory_topic, 1);
     m_bestTrajectoryPub = m_nh.advertise<visualization_msgs::Marker>(best_trajectory_topic, 1);
-    m_goalPub = m_nh.advertise<visualization_msgs::Marker>(goal_topic, 1);
+    m_goalPub = m_nh.advertise<visualization_msgs::MarkerArray>(goal_topic, 1);
 
     // Instantiate TrajectoryLibraryManager
     // Load Configuration / Trajectory Files
@@ -153,7 +153,9 @@ void TrajectoryLibraryWrapper::Loop(){
     }
 }
 
-visualization_msgs::Marker TrajectoryLibraryWrapper::toRviz(Waypoint & currentGoal){
+visualization_msgs::MarkerArray TrajectoryLibraryWrapper::toRviz(Waypoint & currentGoal){
+
+    visualization_msgs::MarkerArray array;
 
     visualization_msgs::Marker m;
 
@@ -172,9 +174,28 @@ visualization_msgs::Marker TrajectoryLibraryWrapper::toRviz(Waypoint & currentGo
     m.pose.position.y = currentGoal.y;
     m.pose.position.z = 0.0;
 
-    // TODO - Add ring around waypoint to show accepted boundary
+    array.markers.push_back(m);
 
-    return m;
+    visualization_msgs::Marker m2;
+
+    m2.header.frame_id = m_baseFrame;
+    m2.header.stamp = ros::Time::now();
+    m2.ns = "ring";
+    m2.id = 1;
+    m2.type = 2;// sphere
+    m2.action = 0;
+    m2.scale.x = 10.0;    m2.scale.y = 10.0;    m2.scale.z = 10.0;
+    m2.color.r = 0.8;
+    m2.color.g = 0.6;
+    m2.color.b = 0.8;
+    m2.color.a = 0.3;
+    m2.pose.position.x = currentGoal.x;
+    m2.pose.position.y = currentGoal.y;
+    m2.pose.position.z = 0.0;
+
+    array.markers.push_back(m2);
+
+    return array;
 }
 
 visualization_msgs::Marker TrajectoryLibraryWrapper::toRviz(geometry_msgs::TransformStamped& tran, Trajectory & traj)

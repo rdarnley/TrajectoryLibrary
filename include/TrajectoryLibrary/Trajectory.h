@@ -41,6 +41,8 @@ class Trajectory {
     private:
 
 
+        // need to incorporate speed profiles
+
 };
 
 #endif
