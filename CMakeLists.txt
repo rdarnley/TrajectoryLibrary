@@ -17,6 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
 )
 
+find_package(  Eigen3 REQUIRED )
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # find_package(CUDA 11.3 REQUIRED)
@@ -38,12 +40,15 @@ catkin_package(
 include_directories(
   include 
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 add_library(traj_lib
     src/Costmap.cpp
     src/TrajectoryLibraryManager.cpp
     src/Trajectory.cpp
+    src/CostFunction.cpp
+    src/GoalManager.cpp
 )
 target_link_libraries(traj_lib ${catkin_LIBRARIES})
 add_dependencies(traj_lib ${catkin_EXPORTED_TARGETS})
@@ -52,6 +57,7 @@ add_executable(TrajectoryLibraryWrapper src/TrajectoryLibraryWrapper.cpp)
 target_link_libraries(TrajectoryLibraryWrapper
     traj_lib
     ${catkin_LIBRARIES}
+    ${EIGEN3_LIBRARIES}
 )
 add_dependencies(TrajectoryLibraryWrapper
     ${catkin_EXPORTED_TARGETS})

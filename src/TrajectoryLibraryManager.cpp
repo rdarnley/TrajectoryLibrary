@@ -3,8 +3,22 @@
 TrajectoryLibraryManager::TrajectoryLibraryManager(double min_x, double min_y, double resolution, int width, int height)
 {
     m_costmap = std::make_shared<Costmap>(min_x, min_y, resolution, width, height);
+    p_gm = std::make_shared<GoalManager>();
+
+    p_cf = std::make_unique<CostFunction>(m_costmap, p_gm);
+
+    m_pos = Position(0.0, 0.0);
+
+    m_bestTraj = Trajectory();
 }
 
+void TrajectoryLibraryManager::setPosition(double x, double y){
+    m_pos.x = x;
+    m_pos.y = y;
+    return;
+}
+
+// void TrajectoryLibraryManager::setGoal(double x, double y){}
 
 bool TrajectoryLibraryManager::configure(std::string filepath)
 {
@@ -71,48 +85,38 @@ bool TrajectoryLibraryManager::configure(std::string filepath)
     return true;
 }
 
-
-bool TrajectoryLibraryManager::processTrajectories(geometry_msgs::TransformStamped & tran)
+bool TrajectoryLibraryManager::processTrajectories(Eigen::Affine3d & tran)
 {
-    // Iterate over trajectories
-    for (auto & [id, traj] : m_trajectories)
-    {
-        // Score Trajectory
-        int cost = 0;
-
-        traj.outputStates.clear();
-        for (auto state : traj.states)
-        {
-            // Transform State To Sensor Init Frame
-            geometry_msgs::Point p;
-            p.x = state.x; p.y = state.y; p.z = state.z;
-
-            tf2::doTransform(p, p, tran);
-
-            State st;
-            st.x = p.x; st.y = p.y; st.z = p.z;
-            traj.outputStates.push_back(st);
-
-            // Get Value In Costmap
-            cost += m_costmap->get(p.x, p.y);
+    if (p_gm->hasGoal()){
+        // Check Waypoint Update From GoalManager -- should this be called from manager ... not wrapper??? -- incorporate in processTrajectories()
+        if (p_gm->checkGoalStatus(m_pos)){
+            p_gm->updateGoal();
         }
 
-        traj.score = cost;
-    
-        std::cout << "Trajectory #" << traj.path_id << " Scored " << cost << std::endl;
+        // Score Trajectories With CostFunction -- could ultimately get sent to gpu -- this would be device function -- processTrajectories would be kernel calling fx
+        p_cf->calculateScores(m_trajectories, tran, m_bestTraj);
+    } else {
+        std::cout << "[TrajectoryLibraryManager] No Goal Set" << std::endl;
     }
-    // add to heap???
 
     return true;
 }
 
+Waypoint TrajectoryLibraryManager::getCurrentGoal()
+{
+    return p_gm->getCurrentGoal();
+}
 
-// TrajectoryLibraryManager::getDebug()
-// {
+Trajectory TrajectoryLibraryManager::getBestTrajectory()
+{
+    std::vector<Trajectory> trajCopy;
+    for (auto elem : m_trajectories){
+        trajCopy.push_back(elem.second);
+    }
 
-// }
+    std::make_heap(trajCopy.begin(), trajCopy.end(), greater1());
 
-// TrajectoryLibraryManager::getBestTrajectory()
-// {
+    m_bestTraj = trajCopy.front();
 
-// }
+    return m_bestTraj;
+}

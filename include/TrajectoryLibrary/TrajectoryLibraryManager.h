@@ -10,17 +10,19 @@
 #include <algorithm> 
 #include <deque>
 #include <unordered_map>
-
-// Want to get rid of this stuff
-#include "tf/transform_datatypes.h"
-#include <tf2_ros/buffer.h>
-#include <tf2_ros/transform_listener.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <tf/transform_listener.h>
-#include "geometry_msgs/TransformStamped.h"
+#include <vector>
+#include <Eigen/Dense>
 
 #include "TrajectoryLibrary/Costmap.h"
 #include "TrajectoryLibrary/Trajectory.h"
+#include "TrajectoryLibrary/CostFunction.h"
+
+// Comparator Function For MinHeap
+struct greater1{
+    bool operator()(const Trajectory& a,const Trajectory& b) const{
+        return a.score>b.score;
+    }
+};
 
 class TrajectoryLibraryManager {
     public:
@@ -31,23 +33,25 @@ class TrajectoryLibraryManager {
         // /// @brief Destructor
         // ~TrajectoryLibraryManager();
 
-        /// @brief Configure
-        // Load Trajectory Library File
+        /// @brief Load Trajectory Library File
         bool configure(std::string filepath); // give filepath???
 
-        bool processTrajectories(geometry_msgs::TransformStamped & tran);
-        // bool getDebug();
-        // bool getBestTrajectory();
+        void setPosition(double x1, double y1);
 
-        std::shared_ptr<Costmap> m_costmap;
-        std::unordered_map<int, Trajectory> m_trajectories;
+        bool processTrajectories(Eigen::Affine3d & tran);
+        Trajectory getBestTrajectory();
+        Waypoint getCurrentGoal();
 
+        std::shared_ptr<Costmap> m_costmap;     // Should these be private and then have getters -- just return pointer???
+        std::unordered_map<int, Trajectory> m_trajectories;     // std::vector<Trajectory> m_trajectories;
 
     private:
 
-        // std::shared_ptr<std::vector<Trajectory>> m_trajectories;  // Is vector correct data structure for this???
-        // std::unordered_map<int, std::vector<Trajectory>> m_trajectories;
-                                                // Might want to use min heap
+        Position m_pos;
+        std::shared_ptr<GoalManager> p_gm;
+        std::unique_ptr<CostFunction> p_cf;
+
+        Trajectory m_bestTraj;
 };
 
 #endif

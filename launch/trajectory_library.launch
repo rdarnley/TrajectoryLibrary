@@ -13,6 +13,7 @@
         <param name="base_frame" value="$(arg fixed_frame_id)"/>
 
         <param name="trajectory_topic" value="/Trajectory_Library/trajectories" />
+        <param name="best_trajectory_topic" value="/TrajectoryLibrary/best_trajectory"/>
 
         <param name="trajectory_library_filepath" value="$(find trajectory_library)/config/paths.ply"/>
         

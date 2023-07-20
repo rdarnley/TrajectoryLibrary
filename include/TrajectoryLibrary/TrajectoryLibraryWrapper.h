@@ -11,13 +11,11 @@
 
 //// ROS Headers ////
 #include <ros/ros.h>
+#include <tf2_ros/transform_listener.h>
 #include <nav_msgs/Odometry.h>
 #include <nav_msgs/OccupancyGrid.h>
-#include <tf2_ros/transform_listener.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <visualization_msgs/Marker.h>
-#include <geometry_msgs/Vector3.h>
-#include <std_msgs/ColorRGBA.h>
 
 bool fromOccupancyGrid( const nav_msgs::OccupancyGrid& msg, std::shared_ptr<Costmap> & costmap );
 
@@ -37,6 +35,8 @@ class TrajectoryLibraryWrapper {
         bool m_hasOdom;
         bool m_hasCostmap;
 
+        double m_rate;
+
         std::string m_vehicleFrame;
         std::string m_baseFrame;
 
@@ -44,7 +44,6 @@ class TrajectoryLibraryWrapper {
         nav_msgs::Odometry m_odometry;
 
         std::unique_ptr<TrajectoryLibraryManager> p_tlm;
-        std::unique_ptr<GoalManager> p_gm;
 
         ////// ROS Library Pieces //////
         ros::NodeHandle m_nh;                               // Node Handle
@@ -56,7 +55,9 @@ class TrajectoryLibraryWrapper {
         ros::Subscriber m_costmap_sub;                      // Costmap Subscriber
 
         ros::Publisher m_trajectoryPub;
-        
+        ros::Publisher m_bestTrajectoryPub;
+        ros::Publisher m_goalPub;
+
         /// @brief Vehicle Odometry Callback
         void odometryCallback(const nav_msgs::Odometry& msg);
 
@@ -64,7 +65,8 @@ class TrajectoryLibraryWrapper {
         void costmapCallback(const nav_msgs::OccupancyGrid& msg);
 
         visualization_msgs::MarkerArray toRviz(geometry_msgs::TransformStamped& tran);
-
+        visualization_msgs::Marker toRviz(geometry_msgs::TransformStamped& tran, Trajectory & traj);
+        visualization_msgs::Marker toRviz(Waypoint & currentGoal);
 
 };
 
