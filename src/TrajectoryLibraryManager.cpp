@@ -52,11 +52,11 @@ bool TrajectoryLibraryManager::configure(std::string filepath)
     }
 
     State st;
-    int pointSkipNum = 30;
+    int pointSkipNum = 50;
     int pointSkipCount = 0;
     int val1, val2, val3, val4, val5, pathID, groupID;
 
-    int pathNum = 343;  //fix this
+    int pathNum = 612;  //fix this
 
     for (int i = 0; i < pointNum; ++i){
         val1 = fscanf(filePtr, "%le", &st.x);

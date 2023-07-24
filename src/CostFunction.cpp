@@ -5,7 +5,7 @@ CostFunction::CostFunction( std::shared_ptr<Costmap>& costmap,
     p_costmap(costmap),
     p_gm(gm)
 {
-    m_costmapWeight = 0.0;
+    m_costmapWeight = 1.0;
     m_heuristicWeight = 0.5;
     m_persistenceWeight = 0.0;
 }
