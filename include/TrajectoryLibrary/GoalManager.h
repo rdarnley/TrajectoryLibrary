@@ -58,6 +58,8 @@ class GoalManager {
         bool hasGoal();
         Waypoint getCurrentGoal();
 
+        void setGoal(double x, double y);
+
     private:
 
         std::queue<Waypoint> wpQueue;

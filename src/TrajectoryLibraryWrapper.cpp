@@ -78,6 +78,10 @@ TrajectoryLibraryWrapper::TrajectoryLibraryWrapper()
     m_bestTrajectoryPub = m_nh.advertise<visualization_msgs::Marker>(best_trajectory_topic, 1);
     m_goalPub = m_nh.advertise<visualization_msgs::MarkerArray>(goal_topic, 1);
 
+    ros::NodeHandle nh;
+    m_controlsPub = nh.advertise<mmpug_msgs::PathVelocity>("rc1/controller/path_velocity", 1);
+    m_goalSub = nh.subscribe("rc1/planner/goal_input", 1, &TrajectoryLibraryWrapper::goalCallback, this);
+
     // Instantiate TrajectoryLibraryManager
     // Load Configuration / Trajectory Files
     p_tlm = std::make_unique<TrajectoryLibraryManager>(min_x, min_y, resolution, width, height);
@@ -148,9 +152,32 @@ void TrajectoryLibraryWrapper::Loop(){
         Trajectory bestTraj = p_tlm->getBestTrajectory();
         m_bestTrajectoryPub.publish(    toRviz(vehicleToBaseTf, bestTraj)); // convert to nav msgs path so controls can respond
 
+        m_controlsPub.publish( toControls( bestTraj ) );
+
         Waypoint currentGoal = p_tlm->getCurrentGoal();
         m_goalPub.publish(  toRviz( currentGoal ));
     }
+}
+
+mmpug_msgs::PathVelocity TrajectoryLibraryWrapper::toControls( Trajectory & traj ){
+
+    mmpug_msgs::PathVelocity msg;
+
+    msg.header.frame_id = m_baseFrame;
+    msg.header.stamp = ros::Time::now();
+
+    msg.target_velocity = 3.0;
+
+    for (int i = 0; i < traj.outputStates.size(); ++i){
+
+        geometry_msgs::PoseStamped p;
+        p.pose.position.x = traj.outputStates[i].x;
+        p.pose.position.y = traj.outputStates[i].y;
+        msg.path.poses.push_back(p);
+
+    }
+
+    return msg;
 }
 
 visualization_msgs::MarkerArray TrajectoryLibraryWrapper::toRviz(Waypoint & currentGoal){
@@ -247,6 +274,13 @@ visualization_msgs::MarkerArray TrajectoryLibraryWrapper::toRviz(geometry_msgs::
     return array;
 }
 
+
+void TrajectoryLibraryWrapper::goalCallback(const mmpug_msgs::GoalInput msg){
+
+    p_tlm->setGoal(msg.goal_x, msg.goal_y);
+
+    return;
+}
 
 void TrajectoryLibraryWrapper::odometryCallback(const nav_msgs::Odometry& msg){
     

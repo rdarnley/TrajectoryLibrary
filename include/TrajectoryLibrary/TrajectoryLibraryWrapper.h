@@ -17,6 +17,9 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <visualization_msgs/Marker.h>
 
+#include <mmpug_msgs/PathVelocity.h>
+#include <mmpug_msgs/GoalInput.h>
+
 bool fromOccupancyGrid( const nav_msgs::OccupancyGrid& msg, std::shared_ptr<Costmap> & costmap );
 
 class TrajectoryLibraryWrapper {
@@ -53,10 +56,12 @@ class TrajectoryLibraryWrapper {
 
         ros::Subscriber m_odometry_sub;                     // Odometry Subscriber
         ros::Subscriber m_costmap_sub;                      // Costmap Subscriber
+        ros::Subscriber m_goalSub;
 
         ros::Publisher m_trajectoryPub;
         ros::Publisher m_bestTrajectoryPub;
         ros::Publisher m_goalPub;
+        ros::Publisher m_controlsPub;
 
         /// @brief Vehicle Odometry Callback
         void odometryCallback(const nav_msgs::Odometry& msg);
@@ -67,6 +72,12 @@ class TrajectoryLibraryWrapper {
         visualization_msgs::MarkerArray toRviz(geometry_msgs::TransformStamped& tran);
         visualization_msgs::Marker toRviz(geometry_msgs::TransformStamped& tran, Trajectory & traj);
         visualization_msgs::MarkerArray toRviz(Waypoint & currentGoal);
+
+        mmpug_msgs::PathVelocity toControls( Trajectory & traj );
+
+        void goalCallback(const mmpug_msgs::GoalInput msg);
+
+
 
 };
 

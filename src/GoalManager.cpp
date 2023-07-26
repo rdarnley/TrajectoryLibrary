@@ -2,9 +2,9 @@
 
 GoalManager::GoalManager(){
     
-    // Example
-    Waypoint wp(10, 10);
-    wpQueue.push(wp);
+    // // Example
+    // Waypoint wp(10, 0);
+    // wpQueue.push(wp);
 }
 
 
@@ -26,6 +26,11 @@ bool GoalManager::updateGoal(){
     wpQueue.pop();
 
     return true;
+}
+
+void GoalManager::setGoal(double x, double y){
+    Waypoint wp(x, y);
+    wpQueue.push(wp);
 }
 
 double GoalManager::getEuclideanDistance(double x, double y){

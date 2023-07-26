@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_msgs
   visualization_msgs
+  mmpug_msgs
 )
 
 find_package(  Eigen3 REQUIRED )

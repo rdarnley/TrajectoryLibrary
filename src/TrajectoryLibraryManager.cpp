@@ -18,6 +18,13 @@ void TrajectoryLibraryManager::setPosition(double x, double y){
     return;
 }
 
+void TrajectoryLibraryManager::setGoal(double x, double y){
+
+    p_gm->setGoal(x, y);
+    return;
+
+}
+
 // void TrajectoryLibraryManager::setGoal(double x, double y){}
 
 bool TrajectoryLibraryManager::configure(std::string filepath)

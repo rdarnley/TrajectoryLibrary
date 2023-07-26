@@ -2,11 +2,11 @@
 
 <launch>
 
-    <arg name="vehicle_frame_id" value="cmu_rc2_sensor"/> 
-    <arg name="fixed_frame_id" value="cmu_rc2_sensor_init"/>                   
+    <arg name="vehicle_frame_id" value="rc1_sensor"/> 
+    <arg name="fixed_frame_id" value="rc1_sensor_init"/>                   
     <node pkg="trajectory_library" type="TrajectoryLibraryWrapper" name="TrajectoryLibraryWrapper" output="screen">
 
-        <param name="odometry_topic" value="/cmu_rc2/integrated_to_init"/>
+        <param name="odometry_topic" value="/rc1/integrated_to_init"/>
         <param name="costmap_topic" value="/voxel_grid/obstacle_map" />
 
         <param name="vehicle_frame" value="$(arg vehicle_frame_id)"/>

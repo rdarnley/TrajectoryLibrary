@@ -38,6 +38,8 @@ class TrajectoryLibraryManager {
 
         void setPosition(double x1, double y1);
 
+        void setGoal(double x, double y);
+
         bool processTrajectories(Eigen::Affine3d & tran);
         Trajectory getBestTrajectory();
         Waypoint getCurrentGoal();
