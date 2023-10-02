@@ -5,6 +5,11 @@
 #include <cmath>
 #include <iostream>
 
+/// @brief Position Struct
+/// @details Struct to hold x and y position
+/// @param x x position
+/// @param y y position
+/// @return Position Struct
 struct Position{
     double x;
     double y;
@@ -15,6 +20,8 @@ struct Position{
         y = y1;
     }
 };
+
+
 
 struct Waypoint{
     double x;
@@ -47,22 +54,26 @@ struct Waypoint{
 class GoalManager {
     public:
 
-        GoalManager();
-        // ~GoalManager();
+        GoalManager() = default;
+        ~GoalManager() = default;
 
         double getEuclideanDistance(double x, double y);
 
         bool checkGoalStatus(Position pos);
-        bool updateGoal();
 
-        bool hasGoal();
-        Waypoint getCurrentGoal();
+        const bool inline hasGoal() const { return m_hasGoal; }
+        
+        const Waypoint inline getCurrentGoal() const { return m_currentGoal; };
 
-        void setGoal(double x, double y);
+        void setGoal(double x, double y) {
+            m_currentGoal = Waypoint(x, y);
+            m_hasGoal = true;
+        };
 
     private:
 
-        std::queue<Waypoint> wpQueue;
+        Waypoint m_currentGoal;
+        bool m_hasGoal;
 
 };
 

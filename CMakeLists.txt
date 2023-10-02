@@ -62,3 +62,14 @@ target_link_libraries(TrajectoryLibraryWrapper
 )
 add_dependencies(TrajectoryLibraryWrapper
     ${catkin_EXPORTED_TARGETS})
+    
+
+## Testing
+catkin_install_python(PROGRAMS mover.py
+	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+	)
+
+if (CATKIN_ENABLE_TESTING)
+	find_package(rostest REQUIRED)
+	add_rostest(my_turtlebot_sim.test)
+endif()

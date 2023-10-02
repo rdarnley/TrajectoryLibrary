@@ -1,0 +1,18 @@
+<launch>
+
+    <!-- Rostest Params -->
+    <param name="waypoint_x" value="20.0"/>
+    <param name="waypoint_y" value="0.0"/>
+    <param name="waypoint_tolerance" value="5.0"/>
+    <param name="waypoint_velocity" value="3.0"/>
+    <param name="active_vehicle" value="mmpug_rc1" />
+
+
+    <!-- Run test shim to send waypoint and spoof joystick controller -->
+    <node pkg="trajectory_library" name="test_shim" type="test_shim.py" output="screen"/>
+
+
+    <!-- Run our test script that asserts the robot does what we expect -->
+    <test test-name="test_bot_moves" pkg="trajectory_library" type="test_bot_moves.py" time-limit="30.0"/>
+
+</launch>

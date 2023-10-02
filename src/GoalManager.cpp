@@ -1,11 +1,7 @@
 #include "TrajectoryLibrary/GoalManager.h"
 
-GoalManager::GoalManager(){
-    
-    // // Example
-    // Waypoint wp(10, 0);
-    // wpQueue.push(wp);
-}
+/// Note: Ideally we remove the functionality from the behavior executive to a degree
+/// For now we will only do a minimalist GoalManager so there isn't contention between the two
 
 
 bool GoalManager::checkGoalStatus(Position pos){
@@ -13,7 +9,9 @@ bool GoalManager::checkGoalStatus(Position pos){
     bool update = false;
 
     // Check If Minimum Distance Threshold Met For Waypoint
-    if (wpQueue.front().isSatisfied(pos.x, pos.y)) { update = true; }
+    if (m_currentGoal.isSatisfied(pos.x, pos.y)) { 
+        update = true; 
+    }
 
     // Check If Wp Is In Obstacle
 
@@ -22,33 +20,14 @@ bool GoalManager::checkGoalStatus(Position pos){
     return update;
 }
 
-bool GoalManager::updateGoal(){
-    wpQueue.pop();
 
-    return true;
-}
-
-void GoalManager::setGoal(double x, double y){
-    Waypoint wp(x, y);
-    wpQueue.push(wp);
-}
 
 double GoalManager::getEuclideanDistance(double x, double y){
-    if (wpQueue.size() > 0){                    // is this the place to have this logic?
-        return wpQueue.front().distance(x, y);
+    if ( hasGoal() ){                    
+        return m_currentGoal.distance(x, y);
     }
     return 0.0;
 }
 
-bool GoalManager::hasGoal(){
-    return wpQueue.size() > 0;
-}
 
 // GoalManager::getRelativeHeading(){}
-
-
-Waypoint GoalManager::getCurrentGoal(){
-    return wpQueue.front();
-}
-
-// GoalManager::setGoal(){}

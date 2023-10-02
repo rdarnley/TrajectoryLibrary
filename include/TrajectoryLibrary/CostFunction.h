@@ -13,11 +13,11 @@ class CostFunction {
 
         CostFunction(   std::shared_ptr<Costmap>& costmap,
                         std::shared_ptr<GoalManager>& gm    );
-        // ~CostFunction();
+        ~CostFunction() = default;
 
         void calculateScores(   std::unordered_map<int, Trajectory> & trajectories, 
-                                Eigen::Affine3d & tran,  
-                                Trajectory & lastTraj );
+                                const Eigen::Affine3d & tran,  
+                                const Trajectory & lastTraj );
 
     private:
 
@@ -27,7 +27,6 @@ class CostFunction {
         double m_costmapWeight;
         double m_heuristicWeight;
         double m_persistenceWeight;
-
 };
 
 #endif

@@ -13,7 +13,7 @@ bool fromOccupancyGrid( const nav_msgs::OccupancyGrid & msg, std::shared_ptr<Cos
   
   costmap->data.clear();
   for ( auto & cell : msg.data ) {
-    costmap->data.push_back( (uint8_t) cell );
+    costmap->data.push_back( static_cast<uint8_t>(cell) );
   }
   
   return true;
@@ -284,6 +284,8 @@ void TrajectoryLibraryWrapper::goalCallback(const mmpug_msgs::GoalInput msg){
 
 void TrajectoryLibraryWrapper::odometryCallback(const nav_msgs::Odometry& msg){
     
+    std::cout << "Odom CB" << std::endl;
+
     m_odometry = msg;
     m_hasOdom = true;
 
@@ -293,6 +295,8 @@ void TrajectoryLibraryWrapper::odometryCallback(const nav_msgs::Odometry& msg){
 
 
 void TrajectoryLibraryWrapper::costmapCallback(const nav_msgs::OccupancyGrid& msg) {
+
+    std::cout << "Costmap CB" << std::endl;
 
     m_occupancyGrid = msg;
     m_hasCostmap = true;

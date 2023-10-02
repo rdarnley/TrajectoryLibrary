@@ -11,8 +11,8 @@ CostFunction::CostFunction( std::shared_ptr<Costmap>& costmap,
 }
 
 void CostFunction::calculateScores( std::unordered_map<int, Trajectory> & trajectories, 
-                                    Eigen::Affine3d & tran,
-                                    Trajectory & lastTraj   ){
+                                    const Eigen::Affine3d & tran,
+                                    const Trajectory & lastTraj   ){
 
     // Iterate over trajectories
     for (auto & [path_id, traj] : trajectories)

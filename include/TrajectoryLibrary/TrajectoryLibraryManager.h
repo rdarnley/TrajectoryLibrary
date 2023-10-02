@@ -30,19 +30,27 @@ class TrajectoryLibraryManager {
         /// @brief Constructor
         TrajectoryLibraryManager(double min_x, double min_y, double resolution, int width, int height);
 
-        // /// @brief Destructor
-        // ~TrajectoryLibraryManager();
+        /// @brief Destructor
+        ~TrajectoryLibraryManager() = default;
 
         /// @brief Load Trajectory Library File
         bool configure(std::string filepath); // give filepath???
 
-        void setPosition(double x1, double y1);
+        /// @brief Set Position
+        /// @param x
+        /// @param y
+        void setPosition( const double x, const double y);
 
-        void setGoal(double x, double y);
+        /// @brief  Set Goal
+        /// @param x 
+        /// @param y 
+        void setGoal( const double x, const double y);
 
-        bool processTrajectories(Eigen::Affine3d & tran);
+        bool processTrajectories( const Eigen::Affine3d& tran );
+        
         Trajectory getBestTrajectory();
-        Waypoint getCurrentGoal();
+        
+        Waypoint getCurrentGoal() const;
 
         std::shared_ptr<Costmap> m_costmap;     // Should these be private and then have getters -- just return pointer???
         std::unordered_map<int, Trajectory> m_trajectories;     // std::vector<Trajectory> m_trajectories;
