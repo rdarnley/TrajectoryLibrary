@@ -86,3 +86,14 @@ if __name__ == '__main__':
 
     ## Run test suite
     rostest.rosrun('traj_lib_sim', 'test_bot_moves', 'test_bot_moves.SuiteTest')
+
+    ## Shut everything down??? (TODO - not sure how i want to do this)
+
+    # import os
+
+    # nodes = os.popen("rosnode list").readlines()
+    # for i in range(len(nodes)):
+    #     nodes[i] = nodes[i].replace("\n","")
+
+    # for node in nodes:
+    #     os.system("rosnode kill "+ node)

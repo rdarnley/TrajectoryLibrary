@@ -1,5 +1,18 @@
 <launch>
 
+    <!-- Launch Args -->
+    <arg name="launch_perception" default="true"/>
+
+
+    <arg name="system_id"     default="$(optenv MMPUG_SYSTEM_ID rc1)" />
+    <arg name="system_type"   default="$(optenv MMPUG_SYSTEM_TYPE rc)" />
+    <arg name="tf_prefix"     default="$(arg system_id)_" />
+    <arg name="namespace"     default="/$(arg system_id)" />
+    <arg name="output"        default="screen" />  
+    <arg name="control_offset" default="0.0" />
+
+
+
     <!-- Rostest Params -->
     <param name="waypoint_x" value="20.0"/>
     <param name="waypoint_y" value="0.0"/>
@@ -7,6 +20,32 @@
     <param name="waypoint_velocity" value="3.0"/>
     <param name="active_vehicle" value="mmpug_rc1" />
 
+
+    <!-- Launch Perception -->
+    <include file="$(find mmpug_voxel_grid)/launch/local_mapping_lidar.launch" if="$(arg launch_perception)">
+        <arg name="system_id" value="rc1"/>
+        <arg name="use_sim" value="true"/>
+    </include>
+
+
+    <group ns="$(arg namespace)">
+
+        <!-- iLQR -->
+        <node name="ilqr_controller" pkg="ilqr_controller" type="main" output="$(arg output)" respawn="false">
+        <param name="frame_id" value="$(arg tf_prefix)sensor_init" />
+        <param name="frame_offset" value="$(arg control_offset)" />
+        <param name="steering_cost" value="10" />
+        <param name="steering_cost_rev_add" value="15" />
+        <param name="steering_cost_kp_vel" value="20" />
+        <param name="accel" value="6.0" />
+        <param name="decel" value="-6.0" />
+        </node>
+
+    </group>
+
+
+    <!-- Trajectory Library -->
+    <include file="$(find trajectory_library)/launch/trajectory_library.launch"/>
 
     <!-- Run test shim to send waypoint and spoof joystick controller -->
     <node pkg="trajectory_library" name="test_shim" type="test_shim.py" output="screen"/>
