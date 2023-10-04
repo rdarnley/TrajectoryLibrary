@@ -19,7 +19,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: mmpug_ws/
 
     steps:
     - uses: actions/checkout@v3
@@ -27,9 +26,6 @@ jobs:
     
     - name: Build code
       run: |
-        pwd
-        cd src/mmpug_autonomy/
-        pwd
         source /opt/ros/noetic/setup.bash
         echo "hi"
         catkin build
