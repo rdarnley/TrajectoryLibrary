@@ -16,14 +16,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: mmpug_ws/
+
     steps:
     - uses: actions/checkout@v3
     
     
     - name: Build code
       run: |
-        cd /home/developer/mmpug_ws/src/mmpug_autonomy
-        source /opt/ros/noetic/setup.bash
+        cd src/mmpug_autonomy/
         catkin build
 
 
