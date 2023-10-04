@@ -10,11 +10,11 @@ jobs:
   build:
 
     runs-on: self-hosted
-    # container: 
-    #     image: rdarnley/rsr:common
-    #     credentials:
-    #       username: ${{ secrets.DOCKER_USERNAME }}
-    #       password: ${{ secrets.DOCKER_PASSWORD }}
+    container: 
+        image: rdarnley/rsr:common
+        credentials:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v3
@@ -22,10 +22,15 @@ jobs:
     
     - name: Build code
       run: |
-        source /home/cmu/.mmpug/auto/mmpug_redirect.bash
-        source /home/cmu/.bashrc
-        mmpug deployer local.autonomy.start
-        mmpug deployer local.autonomy.build
+        cd /home/developer/mmpug_ws/src/mmpug_autonomy
+        source /opt/ros/noetic/setup.bash
+        catkin build
+
+
+    # source /home/cmu/.mmpug/auto/mmpug_redirect.bash
+    # source /home/cmu/.bashrc
+    # mmpug deployer local.autonomy.start
+    # mmpug deployer local.autonomy.build
 
     # - name: configure
     #   run: ./configure
