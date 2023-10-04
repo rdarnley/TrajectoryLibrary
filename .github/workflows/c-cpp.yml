@@ -10,8 +10,7 @@ jobs:
   build:
 
     runs-on: self-hosted
-    container: 
-        image: mmpug/x86.ros.noetic:release.v3.0
+    # container: mmpug_common
 
     steps:
     - uses: actions/checkout@v3
