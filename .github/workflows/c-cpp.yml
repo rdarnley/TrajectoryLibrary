@@ -28,6 +28,8 @@ jobs:
     - name: Build code
       run: |
         ls -la
+        cd ..
+        ls -la
         source /opt/ros/noetic/setup.bash
         echo "hi"
         catkin build
