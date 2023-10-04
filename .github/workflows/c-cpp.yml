@@ -19,7 +19,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ~/mmpug_ws/
+        # working-directory: ~/mmpug_ws/
 
     steps:
     - uses: actions/checkout@v3
@@ -27,6 +27,7 @@ jobs:
     
     - name: Build code
       run: |
+        ls -la
         source /opt/ros/noetic/setup.bash
         echo "hi"
         catkin build
