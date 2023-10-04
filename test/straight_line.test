@@ -1,5 +1,10 @@
 <launch>
 
+    <!-- Example Launch -->
+    <!-- rostest trajectory_library straight_line.test -->
+    <!-- NOTE : If roscore/master already exists add "reuse-master" tag -->
+
+
     <!-- Launch Args -->
     <arg name="launch_perception" default="true"/>
 
@@ -10,7 +15,6 @@
     <arg name="namespace"     default="/$(arg system_id)" />
     <arg name="output"        default="screen" />  
     <arg name="control_offset" default="0.0" />
-
 
 
     <!-- Rostest Params -->
@@ -28,9 +32,8 @@
     </include>
 
 
-    <group ns="$(arg namespace)">
-
-        <!-- iLQR -->
+    <!-- iLQR -->
+    <group ns="/rc1">
         <node name="ilqr_controller" pkg="ilqr_controller" type="main" output="$(arg output)" respawn="false">
         <param name="frame_id" value="$(arg tf_prefix)sensor_init" />
         <param name="frame_offset" value="$(arg control_offset)" />
@@ -40,16 +43,31 @@
         <param name="accel" value="6.0" />
         <param name="decel" value="-6.0" />
         </node>
-
     </group>
 
+
+    <!-- Gazebo -->
+    <include file="$(find mmpug_gazebo)/launch/mmpug_rc.launch">
+        <arg name="world_name" value="canyonview_field"/>
+        <arg name="system_id" value="rc1"/>
+        <arg name="spawn_gazebo" value="true"/>
+        <arg name="start_x" value="2"/>
+    </include>
+
+
+    <!-- Simulated Estimation -->
+    <include file="$(find mmpug_estimation_core)/launch/sim_estimation.launch">
+        <arg name="system_id" value="rc1"/>
+    </include>
+
+
+    <!-- Trajectory Library + Test Scripts -->
 
     <!-- Trajectory Library -->
     <include file="$(find trajectory_library)/launch/trajectory_library.launch"/>
 
     <!-- Run test shim to send waypoint and spoof joystick controller -->
     <node pkg="trajectory_library" name="test_shim" type="test_shim.py" output="screen"/>
-
 
     <!-- Run our test script that asserts the robot does what we expect -->
     <test test-name="test_bot_moves" pkg="trajectory_library" type="test_bot_moves.py" time-limit="30.0"/>
