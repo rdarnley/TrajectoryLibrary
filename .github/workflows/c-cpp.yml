@@ -28,6 +28,8 @@ jobs:
     - name: Build code
       run: |
         cd src/mmpug_autonomy/
+        source /opt/ros/noetic/setup.bash
+        echo "hi"
         catkin build
 
 
