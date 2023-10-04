@@ -10,16 +10,21 @@ jobs:
   build:
 
     runs-on: self-hosted
-    container: 
-        image: rdarnley/rsr:common
-        credentials:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    # container: 
+    #     image: rdarnley/rsr:common
+    #     credentials:
+    #       username: ${{ secrets.DOCKER_USERNAME }}
+    #       password: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v3
-    - name: echo
-      run: echo "hi"
+    
+    
+    - name: Build code
+      run: |
+        mmpug deployer local.autonomy.start
+        mmpug deployer local.autonomy.build
+        
     # - name: configure
     #   run: ./configure
     # - name: make
