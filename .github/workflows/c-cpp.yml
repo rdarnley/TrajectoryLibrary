@@ -19,6 +19,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ~/mmpug_ws/
 
     steps:
     - uses: actions/checkout@v3
