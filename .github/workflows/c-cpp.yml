@@ -22,9 +22,11 @@ jobs:
     
     - name: Build code
       run: |
+        source /home/cmu/.mmpug/auto/mmpug_redirect.bash
+        source /home/cmu/.bashrc
         mmpug deployer local.autonomy.start
         mmpug deployer local.autonomy.build
-        
+
     # - name: configure
     #   run: ./configure
     # - name: make
